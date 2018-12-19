@@ -1,0 +1,18 @@
+---
+title: "Data"
+---
+
+# R Code
+
+```{r, echo=FALSE}
+goe<- c(1,2,3,4)
+no <- c(2,4,6,8)
+mean(goe)
+plot(goe,no)
+
+
+
+
+
+
+```
