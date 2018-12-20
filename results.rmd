@@ -23,18 +23,15 @@ EDUdt <- data.table(EDU)
 
 cor(EDUdt[,Score],EDUdt[,Income])
 plot(EDUdt[,Score],EDUdt[,Income])
-
 cor(EDUdt[,Score],EDUdt[,Mother_edu])
 plot(EDUdt[,Score],EDUdt[,Mother_edu])
-
 cor(EDUdt[,Score],EDUdt[,Father_edu])
 plot(EDUdt[,Score],EDUdt[,Mother_edu])
-
 cor(EDUdt[,Score],EDUdt[,Father_Prof])
 plot(EDUdt[,Score],EDUdt[,Mother_edu])
-
 cor(EDUdt[,Score],EDUdt[,Mother_Prof])
 plot(EDUdt[,Score],EDUdt[,Mother_edu])
+
 ```
 
 It is interesting to notice that all the variables have a very high correlation with the score and might be considered in the regression model. Moreover, in a first view it seems that income shows an exponential relation to score, while the other factors look much more linear. 
@@ -49,21 +46,41 @@ cor(EDUdt[,Income],EDUdt[,Mother_edu])
 cor(EDUdt[,Income],EDUdt[,Mother_edu])
 ```
 
-As expected, the variables assumed as independent present a significant association. 
+As expected, the variables initially assumed as independent presented a significant association. 
 
 By dynamically selecting variables and running the regression model it was possible to notice that the R-square of the model was not significantly impacted by adding more variables - as expected due the association among them.  
 
-Moreover, the regression results (bellow) demonstrated that the Mother Education level, together with the Type of the school, can provide a R-square almost as good as that when all types of variables is used (Income, Education, Profession and School Type).
+Moreover, the regression results (bellow) demonstrated that the Mother Education level, together with the Type of the school (model4), can provide a R-square almost as good as that when all types of variables is used (Model2: Income, Education, Profession and School Type).
+
+Finally, model3, demonstrated that the interaction between Mother_edu and School Type does not provide additional predictive power to the regression.
 
 ```{r}
 
 model2 <- lm(Score ~ Income + Mother_edu + Mother_Prof + Type_2, EDUdt)
 summary(model2)
 
-model3 <- lm(Score ~ Mother_edu + Type_2, EDUdt)
+model3 <- lm(Score ~ Mother_edu*Type_2, EDUdt)
 summary(model3)
 
+model4 <- lm(Score ~ Mother_edu+Type_2, EDUdt)
+summary(model4)
+
 ```
+#####Final regression analysis:
+
+The final regression model predicts that a **Federal** school, in which the average Mother Education level is zero, will have a expected score of 479.5;  
+If the school is **Private**, that initial score will be reduced in 51.9;  
+If the school is a **State or City** school, that initial score will be reduced in 93.1;  
+For all the cases, for each point that the average **Mother Education** increases, the score will increase in 31.4 points.  
+The 0.7399 R-square, indicates that the model explains 74% of the variability of the response data around its mean.  
+
+#####Discussion
+
+As expected, the education level of parents is an important predictor of the score in the test, since it is highly associated with income, and might also impact in the motivation, guidance and family support of the student.  
+
+The model also highlighted the important difference between Public and Private schools. Private schools in Brazil have better structure, better teachers and more demanding parents, that are investing a large amount of their money in their kids' education. 
+
+It also showed that Federal schools are a very special case of Public schools, a result supported by empirical analysis of the education system. Federal schools are usually very selective, attracting the best students in the region. Also, they also receive a significant higher funding than State and City schools and have a majority of its teachers with higher degrees, not rare PhDs. 
 
 
 

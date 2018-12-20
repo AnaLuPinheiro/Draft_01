@@ -4,5 +4,23 @@ title: "Conclusion"
 
 Our main findings are aligned with existing empirical data and our initial hypothesis. As expected, we see that average schools' ENEM scores are significantly explained by the type of school, the family's average income, the parents' professional status, and the parents' educational level.
 
+ 
+This association, suggested by initial analysis and box-plot graph, was validated in our statistical testing by both ANOVA and regression methods. Results show that Private schools have significantly higher scores on average than Public Schools. This is expected, since the students from Private schools tend to come from privileged families, while Public school students often come from more vulnerable family backgrounds.
 
-This association, suggested by our initial analysis and box-plot graph, was validated in our statistical testing by both ANOVA and regression methods. Results show that Private schools have significantly higher scores on average than Public Schools. This is expected, since the students from Private schools tend to come from privileged families, while Public school students often come from more vulnerable family backgrounds. 
+
+As expected, our regression analysis evidences that our independent variables are highly associated, and all of them have a significant effect on scores. Out of all the variables, the mothers' educational level has presented the better explanatory power. Particularly, this has interesting policy implications since mothers' can be target as a group of interest for public policies aiming to improve children's school performance.
+
+
+***
+
+ 
+#####References
+
+ 
+Albernaz, Â., Ferreira, F. H., & Franco, C. (2002). Qualidade e eqüidade na educação fundamental brasileira. Texto para discussão (No. 455).
+
+Coleman, J. S. (1966). Equality of educational opportunity.
+
+Dickinson E. (2016). Coleman report set the standard for the study of public education. Retrieved from: https://hub.jhu.edu/magazine/2016/winter/coleman-report-public-education/
+
+Ministry of Education. Data retrieved from http://inep.gov.br/inep-data
