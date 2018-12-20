@@ -1,3 +1,70 @@
 ---
 title: "Results"
 ---
+
+####1.	Significance of the difference between the average scores for each type of school
+
+
+```{r}
+model1 <- lm(Score ~ Type_2, EDUdt)
+anova(model1)
+```
+
+Based on the results above, with Pr(>F) at 2.2e-16, we can reject the null hyphotesis that the means are equal, and hence, it is possible to conclude that the means are significantly different.
+  
+   
+  
+####2.	Exploratory analysis on possible correlations
+
+In order to investigate possible correlations, it is useful to analyze both the correlation coefficient as well as the data plot, that will provide a visual understanding of the correlation.
+
+```{r}
+EDUdt <- data.table(EDU)
+
+cor(EDUdt[,Score],EDUdt[,Income])
+plot(EDUdt[,Score],EDUdt[,Income])
+
+cor(EDUdt[,Score],EDUdt[,Mother_edu])
+plot(EDUdt[,Score],EDUdt[,Mother_edu])
+
+cor(EDUdt[,Score],EDUdt[,Father_edu])
+plot(EDUdt[,Score],EDUdt[,Mother_edu])
+
+cor(EDUdt[,Score],EDUdt[,Father_Prof])
+plot(EDUdt[,Score],EDUdt[,Mother_edu])
+
+cor(EDUdt[,Score],EDUdt[,Mother_Prof])
+plot(EDUdt[,Score],EDUdt[,Mother_edu])
+```
+
+It is interesting to notice that all the variables have a very high correlation with the score and might be considered in the regression model. Moreover, in a first view it seems that income shows an exponential relation to score, while the other factors look much more linear. 
+
+In addition to the previous, due to the nature of the variables, is also likely they are not independent from each other, and might have important associations. The acknowledge of such confounders will help the selection of the adequate set of variables for a first model.
+
+
+```{r}
+cor(EDUdt[,Father_edu],EDUdt[,Mother_edu])
+cor(EDUdt[,Father_Prof],EDUdt[,Mother_Prof])
+cor(EDUdt[,Income],EDUdt[,Mother_edu])
+cor(EDUdt[,Income],EDUdt[,Mother_edu])
+```
+
+As expected, the variables assumed as independent present a significant association. 
+
+By dynamically selecting variables and running the regression model it was possible to notice that the R-square of the model was not significantly impacted by adding more variables - as expected due the association among them.  
+
+Moreover, the regression results (bellow) demonstrated that the Mother Education level, together with the Type of the school, can provide a R-square almost as good as that when all types of variables is used (Income, Education, Profession and School Type).
+
+```{r}
+
+model2 <- lm(Score ~ Income + Mother_edu + Mother_Prof + Type_2, EDUdt)
+summary(model2)
+
+model3 <- lm(Score ~ Mother_edu + Type_2, EDUdt)
+summary(model3)
+
+```
+
+
+
+

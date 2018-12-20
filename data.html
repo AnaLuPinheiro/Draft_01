@@ -282,10 +282,7 @@ $(document).ready(function () {
   <a href="index.html">Introduction</a>
 </li>
 <li>
-  <a href="data.html">Data</a>
-</li>
-<li>
-  <a href="methods.html">Methods</a>
+  <a href="data.html">Data and Methods</a>
 </li>
 <li>
   <a href="results.html">Results</a>
@@ -310,10 +307,69 @@ $(document).ready(function () {
 </div>
 
 
-<div id="r-code" class="section level1">
-<h1>R Code</h1>
-<pre><code>## [1] 2.5</code></pre>
-<p><img src="data_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>The data used was obtained in the information web-portal of the Ministry of Education in Brazil, and for each school in the country, it provides the average score in the ENEM standardized test, and a series of economic and social indicators.</p>
+<p>The dataset used in this analysis is a reduced version, specific for the metropolitan region of the city of Belo Horizonte, and containing the following information:</p>
+<p><strong>ID</strong> = Row number, each row is one school</p>
+<p><strong>Score</strong> = Average score for that school in 2017 test -&gt; Is the dependent variable</p>
+<p><strong>Income</strong> = Average income of the families in that school, measured in number of minimum ages (ex.: 1 = aprox. $300/month)</p>
+<p><strong>Mother_edu; Father_edu</strong> = Education level, from 1-5, being 0=illiterate, and 5=PhD</p>
+<p><strong>Mother_Prof; Father_Prof</strong> = Level of Ocupation, from 1-5, being 1=Lower, uniskilled positions and 5=Higher Positions, like top executives, doctors, and high rank officials</p>
+<p><strong>Type_1</strong> = Type of School, Public, Private</p>
+<p><strong>Type_2</strong> = Break down Public School in Federal and State/City Schools</p>
+<p><strong>Students</strong> = Number of students in the School</p>
+<pre class="r"><code>EDU&lt;-read.csv(&quot;Edu_Brazil.csv&quot;)
+EDUdt &lt;- data.table(EDU)
+names(EDUdt)</code></pre>
+<pre><code>##  [1] &quot;ID&quot;          &quot;Score&quot;       &quot;Income&quot;      &quot;Mother_edu&quot;  &quot;Father_edu&quot; 
+##  [6] &quot;Mother_Prof&quot; &quot;Father_Prof&quot; &quot;Type_1&quot;      &quot;Type_2&quot;      &quot;Students&quot;</code></pre>
+<pre class="r"><code>summary(EDUdt)</code></pre>
+<pre><code>##        ID            Score           Income         Mother_edu   
+##  Min.   :  1.0   Min.   :427.2   Min.   : 0.500   Min.   :1.000  
+##  1st Qu.: 96.5   1st Qu.:497.4   1st Qu.: 1.686   1st Qu.:3.667  
+##  Median :192.0   Median :520.4   Median : 2.417   Median :4.167  
+##  Mean   :192.0   Mean   :541.7   Mean   : 4.189   Mean   :4.385  
+##  3rd Qu.:287.5   3rd Qu.:586.8   3rd Qu.: 5.977   3rd Qu.:5.167  
+##  Max.   :383.0   Max.   :712.5   Max.   :22.500   Max.   :7.000  
+##    Father_edu     Mother_Prof     Father_Prof        Type_1   
+##  Min.   :1.000   Min.   :1.000   Min.   :1.000   Private:154  
+##  1st Qu.:3.971   1st Qu.:2.747   1st Qu.:2.369   Public :229  
+##  Median :4.533   Median :3.036   Median :2.750                
+##  Mean   :4.628   Mean   :3.266   Mean   :2.942                
+##  3rd Qu.:5.377   3rd Qu.:3.838   3rd Qu.:3.527                
+##  Max.   :7.000   Max.   :5.000   Max.   :5.000                
+##         Type_2       Students     
+##  Federal   :  5   Min.   :  21.0  
+##  Private   :154   1st Qu.: 367.5  
+##  State_City:224   Median : 672.0  
+##                   Mean   : 798.0  
+##                   3rd Qu.:1027.0  
+##                   Max.   :3846.0</code></pre>
+<p>In addition, as mentioned in the introduction, is common sense in Brazil that private schools are better than public schools. So, it is also important to explore this assumption, and present a more specific data summary for the score in each type of school.</p>
+<pre class="r"><code>FEDERAL &lt;- EDU[EDU[,&quot;Type_2&quot;] == &quot;Federal&quot;,]
+STATE_CITY &lt;- EDU[EDU[,&quot;Type_2&quot;] == &quot;State_City&quot;,]
+PRIVATE &lt;- EDU[EDU[,&quot;Type_2&quot;] == &quot;Private&quot;,]
+boxplot(FEDERAL[,&quot;Score&quot;],STATE_CITY[,&quot;Score&quot;],PRIVATE[,&quot;Score&quot;])</code></pre>
+<p><img src="data_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>While it is clear that different schools have different performance, is also visible that there is an important variation on scores inside each group, indicating that possible other variables also impact the academic performance.</p>
+<p>In the following section I will discuss how I intend to further investigate this hyphotesis, and develop a model to understand the impact of each variable in the scores.</p>
+<hr />
+<div id="the-method" class="section level3">
+<h3>The Method</h3>
+<div id="verify-significance-of-the-difference-between-the-average-scores-for-each-type-of-school" class="section level5">
+<h5>1. Verify significance of the difference between the average scores for each type of school</h5>
+<p>While when comparing two groups a t-test would be enough, in this case, with three different categorical levels (Federal, State_City and Private) the <strong>ANOVA</strong> analysis is the appropriate tool.</p>
+</div>
+<div id="conduct-exploratory-analysis-to-investigate-possible-correlations-between-the-independent-variables-and-the-dependent-variable-score" class="section level5">
+<h5>2. Conduct exploratory analysis to investigate possible correlations between the independent variables and the dependent variable (score)</h5>
+<p>Before engaging in any modeling is important to develop clear hypothesis on which variables to use and why. To do that, I will (i) plot the independent variables vs score; (ii) obtain the correlation between independent variables and score; (iii) explore possible interdependencies and confounders among independent variables.</p>
+</div>
+<div id="build-regression-model-to-identify-how-each-variable-impact-on-score" class="section level5">
+<h5>3. Build regression model to identify how each variable impact on score</h5>
+<p>A multivariate regression model will provide a detailed, comprehensive view on the impact of each select independent variable on the dependent variable <strong>Score</strong>, allowing us to discuss the results and drive conclusions.</p>
+</div>
+<div id="analyze-results-and-present-conclusions" class="section level5">
+<h5>4. Analyze results and present conclusions</h5>
+</div>
 </div>
 
 

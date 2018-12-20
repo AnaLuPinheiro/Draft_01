@@ -1,18 +1,63 @@
 ---
 title: "Data"
 ---
+The data used was obtained in the information web-portal of the Ministry of Education in Brazil, and for each school in the country, it provides the average score in the ENEM standardized test, and a series of economic and social indicators. 
 
-# R Code
-
-```{r, echo=FALSE}
-goe<- c(1,2,3,4)
-no <- c(2,4,6,8)
-mean(goe)
-plot(goe,no)
+The dataset used in this analysis is a reduced version, specific for the metropolitan region of the city of Belo Horizonte, and containing the following information:
 
 
+**ID** = Row number, each row is one school
+
+**Score** = Average score for that school in 2017 test -> Is the dependent variable
+
+**Income** = Average income of the families in that school, measured in number of minimum ages (ex.: 1 = aprox. $300/month)
+
+**Mother_edu; Father_edu** = Education level, from 1-5, being 0=illiterate, and 5=PhD
+
+**Mother_Prof; Father_Prof** = Level of Ocupation, from 1-5, being 1=Lower, uniskilled positions and 5=Higher Positions, like top executives, doctors, and high rank officials 
+
+**Type_1** = Type of School, Public, Private
+
+**Type_2** = Break down Public School in Federal and State/City Schools
+
+**Students** = Number of students in the School
 
 
+```{r}
+EDU<-read.csv("Edu_Brazil.csv")
+EDUdt <- data.table(EDU)
+names(EDUdt)
+summary(EDUdt)
+```
 
+
+In addition, as mentioned in the introduction, is common sense in Brazil that private schools are better than public schools. So, it is also important to explore this assumption, and present a more specific data summary for the score in each type of school. 
+
+
+```{r}
+FEDERAL <- EDU[EDU[,"Type_2"] == "Federal",]
+STATE_CITY <- EDU[EDU[,"Type_2"] == "State_City",]
+PRIVATE <- EDU[EDU[,"Type_2"] == "Private",]
+boxplot(FEDERAL[,"Score"],STATE_CITY[,"Score"],PRIVATE[,"Score"])
 
 ```
+
+
+While it is clear that different schools have different performance, is also visible that there is an important variation on scores inside each group, indicating that possible other variables also impact the academic performance.
+
+In the following section I will discuss how I intend to further investigate this hyphotesis, and develop a model to understand the impact of each variable in the scores.  
+
+***
+  
+###The Method
+
+#####1.	Verify significance of the difference between the average scores for each type of school
+While when comparing two groups a t-test would be enough, in this case, with three different categorical levels (Federal, State_City and Private) the **ANOVA** analysis is the appropriate tool. 
+
+#####2.	Conduct exploratory analysis to investigate possible correlations between the independent variables and the dependent variable (score)
+Before engaging in any modeling is important to develop clear hypothesis on which variables to use and why. To do that, I will (i) plot the independent variables vs score; (ii) obtain the correlation between independent variables and score; (iii) explore possible interdependencies and confounders among independent variables. 
+
+#####3.	Build regression model to identify how each variable impact on score
+A multivariate regression model will provide a detailed, comprehensive view on the impact of each select independent variable on the dependent variable **Score**, allowing us to discuss the results and drive conclusions. 
+
+#####4.	Analyze results and present conclusions

@@ -282,10 +282,7 @@ $(document).ready(function () {
   <a href="index.html">Introduction</a>
 </li>
 <li>
-  <a href="data.html">Data</a>
-</li>
-<li>
-  <a href="methods.html">Methods</a>
+  <a href="data.html">Data and Methods</a>
 </li>
 <li>
   <a href="results.html">Results</a>
@@ -310,7 +307,105 @@ $(document).ready(function () {
 </div>
 
 
+<div id="significance-of-the-difference-between-the-average-scores-for-each-type-of-school" class="section level4">
+<h4>1. Significance of the difference between the average scores for each type of school</h4>
+<pre class="r"><code>model1 &lt;- lm(Score ~ Type_2, EDUdt)
+anova(model1)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Response: Score
+##            Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## Type_2      2 809818  404909  313.78 &lt; 2.2e-16 ***
+## Residuals 380 490359    1290                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Based on the results above, with Pr(&gt;F) at 2.2e-16, we can reject the null hyphotesis that the means are equal, and hence, it is possible to conclude that the means are significantly different.</p>
+</div>
+<div id="exploratory-analysis-on-possible-correlations" class="section level4">
+<h4>2. Exploratory analysis on possible correlations</h4>
+<p>In order to investigate possible correlations, it is useful to analyze both the correlation coefficient as well as the data plot, that will provide a visual understanding of the correlation.</p>
+<pre class="r"><code>EDUdt &lt;- data.table(EDU)
 
+cor(EDUdt[,Score],EDUdt[,Income])</code></pre>
+<pre><code>## [1] 0.7845133</code></pre>
+<pre class="r"><code>plot(EDUdt[,Score],EDUdt[,Income])</code></pre>
+<p><img src="results_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code>cor(EDUdt[,Score],EDUdt[,Mother_edu])</code></pre>
+<pre><code>## [1] 0.8230259</code></pre>
+<pre class="r"><code>plot(EDUdt[,Score],EDUdt[,Mother_edu])
+
+cor(EDUdt[,Score],EDUdt[,Father_edu])</code></pre>
+<pre><code>## [1] 0.8389824</code></pre>
+<pre class="r"><code>plot(EDUdt[,Score],EDUdt[,Mother_edu])</code></pre>
+<p><img src="results_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
+<pre class="r"><code>cor(EDUdt[,Score],EDUdt[,Father_Prof])</code></pre>
+<pre><code>## [1] 0.8250296</code></pre>
+<pre class="r"><code>plot(EDUdt[,Score],EDUdt[,Mother_edu])
+
+cor(EDUdt[,Score],EDUdt[,Mother_Prof])</code></pre>
+<pre><code>## [1] 0.8250341</code></pre>
+<pre class="r"><code>plot(EDUdt[,Score],EDUdt[,Mother_edu])</code></pre>
+<p>It is interesting to notice that all the variables have a very high correlation with the score and might be considered in the regression model. Moreover, in a first view it seems that income shows an exponential relation to score, while the other factors look much more linear.</p>
+<p>In addition to the previous, due to the nature of the variables, is also likely they are not independent from each other, and might have important associations. The acknowledge of such confounders will help the selection of the adequate set of variables for a first model.</p>
+<pre class="r"><code>cor(EDUdt[,Father_edu],EDUdt[,Mother_edu])</code></pre>
+<pre><code>## [1] 0.892412</code></pre>
+<pre class="r"><code>cor(EDUdt[,Father_Prof],EDUdt[,Mother_Prof])</code></pre>
+<pre><code>## [1] 0.8979875</code></pre>
+<pre class="r"><code>cor(EDUdt[,Income],EDUdt[,Mother_edu])</code></pre>
+<pre><code>## [1] 0.8407297</code></pre>
+<pre class="r"><code>cor(EDUdt[,Income],EDUdt[,Mother_edu])</code></pre>
+<pre><code>## [1] 0.8407297</code></pre>
+<p>As expected, the variables assumed as independent present a significant association.</p>
+<p>By dynamically selecting variables and running the regression model it was possible to notice that the R-square of the model was not significantly impacted by adding more variables - as expected due the association among them.</p>
+<p>Moreover, the regression results (bellow) demonstrated that the Mother Education level, together with the Type of the school, can provide a R-square almost as good as that when all types of variables is used (Income, Education, Profession and School Type).</p>
+<pre class="r"><code>model2 &lt;- lm(Score ~ Income + Mother_edu + Mother_Prof + Type_2, EDUdt)
+summary(model2)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Score ~ Income + Mother_edu + Mother_Prof + Type_2, 
+##     data = EDUdt)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -224.600  -10.499    0.792   12.597   87.613 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)      476.5974    19.1865  24.840  &lt; 2e-16 ***
+## Income             2.7830     0.8286   3.358 0.000864 ***
+## Mother_edu        15.0172     3.5117   4.276 2.41e-05 ***
+## Mother_Prof       19.5680     5.1526   3.798 0.000170 ***
+## Type_2Private    -60.0742    13.0033  -4.620 5.28e-06 ***
+## Type_2State_City -89.2037    13.2162  -6.750 5.61e-11 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 28.43 on 377 degrees of freedom
+## Multiple R-squared:  0.7656, Adjusted R-squared:  0.7625 
+## F-statistic: 246.3 on 5 and 377 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>model3 &lt;- lm(Score ~ Mother_edu + Type_2, EDUdt)
+summary(model3)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Score ~ Mother_edu + Type_2, data = EDUdt)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -189.65  -12.53    0.86   13.74   91.12 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)       479.485     17.883  26.812  &lt; 2e-16 ***
+## Mother_edu         31.367      2.372  13.223  &lt; 2e-16 ***
+## Type_2Private     -51.900     13.538  -3.833 0.000148 ***
+## Type_2State_City  -93.143     13.810  -6.745 5.75e-11 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 29.75 on 379 degrees of freedom
+## Multiple R-squared:  0.7419, Adjusted R-squared:  0.7399 
+## F-statistic: 363.2 on 3 and 379 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
 
 
 
