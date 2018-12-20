@@ -17,10 +17,10 @@ As expected, our regression analysis evidences that our independent variables ar
 #####References
 
  
-Albernaz, Â., Ferreira, F. H., & Franco, C. (2002). Qualidade e eqüidade na educação fundamental brasileira. Texto para discussão (No. 455).
+Albernaz, A., Ferreira, F. H., & Franco, C. (2002). Qualidade e equidade na educacao fundamental brasileira. Texto para discussao (No. 455).
 
 Coleman, J. S. (1966). Equality of educational opportunity.
 
-Dickinson E. (2016). Coleman report set the standard for the study of public education. Retrieved from: https://hub.jhu.edu/magazine/2016/winter/coleman-report-public-education/
+Dickinson E. (2016). Coleman report set the standard for the study of public education. Retrieved from: https://hub.jhu.edu/magazine/2016/winter/coleman-report-public-education.
 
 Ministry of Education. Data retrieved from http://inep.gov.br/inep-data
